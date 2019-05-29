@@ -1,0 +1,3 @@
+TRUNCATE
+  backburner_tasks
+  RESTART IDENTITY CASCADE;
