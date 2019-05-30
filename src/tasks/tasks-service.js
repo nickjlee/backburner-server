@@ -4,14 +4,21 @@ const Treeize = require('treeize')
 const TasksService = {
   getAllTasks(db) {
     return db
-      .from('backburner_tasks AS task')
+      .from('backburner_tasks AS tsk')
       .select(
-        'task.id',
-        'task.text',
-        'task.due_date',
-        'task.reward',
-        'task.xp'
+        'tsk.id',
+        'tsk.text',
+        'tsk.due_date',
+        'tsk.reward',
+        'tsk.xp',
+        ...userFields,
       )
+      .leftJoin(
+        'backburner_users AS usr',
+        'tsk.user_id',
+        'usr.id'
+      )
+      .groupBy('tsk.id', 'usr.id')
   },
 
   serializeTasks(tasks) {
@@ -28,9 +35,18 @@ const TasksService = {
       text: xss(taskData.text),
       due_date: taskData.due_date,
       reward: xss(taskData.reward),
-      xp: taskData.xp
+      xp: taskData.xp,
+      user: taskData.user || {}
     }
   }
 }
+
+const userFields = [
+  'usr.id AS user:id',
+  'usr.username AS user:username',
+  'usr.first_name AS user:first_name',
+  'usr.level AS user:level',
+  'usr.date_joined AS user:date_joined'
+]
 
 module.exports = TasksService

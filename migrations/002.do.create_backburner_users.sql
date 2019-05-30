@@ -3,7 +3,8 @@ CREATE TABLE backburner_users (
   username TEXT NOT NULL UNIQUE,
   first_name TEXT NOT NULL,
   password TEXT NOT NULL,
-  date_created TIMESTAMP NOT NULL DEFAULT now()
+  level INTEGER NOT NULL DEFAULT 0,
+  date_joined TIMESTAMP NOT NULL DEFAULT now()
 );
 
 ALTER TABLE backburner_tasks
