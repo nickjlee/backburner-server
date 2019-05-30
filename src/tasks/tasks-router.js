@@ -4,9 +4,9 @@ const TasksService = require('./tasks-service')
 const tasksRouter = express.Router()
 
 tasksRouter
-  .route('/')
+  .route('/:user_id')
   .get((req, res, next) => {
-    TasksService.getAllTasks(req.app.get('db'))
+    TasksService.getUserTasks(req.app.get('db'), req.params.user_id)
       .then(tasks => {
         res.json(TasksService.serializeTasks(tasks))
       })

@@ -2,7 +2,7 @@ const xss = require('xss')
 const Treeize = require('treeize')
 
 const TasksService = {
-  getAllTasks(db) {
+  getUserTasks(db, user_id) {
     return db
       .from('backburner_tasks AS tsk')
       .select(
@@ -11,14 +11,10 @@ const TasksService = {
         'tsk.due_date',
         'tsk.reward',
         'tsk.xp',
-        ...userFields,
       )
-      .leftJoin(
-        'backburner_users AS usr',
-        'tsk.user_id',
-        'usr.id'
+      .where(
+        'tsk.user_id', user_id
       )
-      .groupBy('tsk.id', 'usr.id')
   },
 
   serializeTasks(tasks) {
@@ -36,7 +32,6 @@ const TasksService = {
       due_date: taskData.due_date,
       reward: xss(taskData.reward),
       xp: taskData.xp,
-      user: taskData.user || {}
     }
   }
 }
