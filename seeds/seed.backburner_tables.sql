@@ -7,9 +7,9 @@ TRUNCATE
 
 INSERT INTO backburner_users (username, first_name, password, level)
 VALUES
-  ('demo1', 'Demo-1', 'password', 0),
-  ('demo2', 'Demo-2', '12345', 13),
-  ('demo3', 'Demo-3', 'demo', 4);
+  ('demo1', 'Demo-1', '$2a$12$Xtsip8DrajF4Va0dou5T9uLgDrWme3Mk/PWoCXLm5a9hK5fx6G5Ky', 0),
+  ('demo2', 'Demo-2', '$2a$12$WJFfSXfZEpXIyGfhUoGUt.gn8HjcVSkwRD.j8/Q2e/LlzhmYK0OVi', 13),
+  ('demo3', 'Demo-3', '$2a$12$Kx1KcC51cjmqo7HklDLGaO2dxJ0ykPiqddi7QB0b0XN4hoYPpB6cq', 4);
 
 INSERT INTO backburner_tasks (text, due_date, reward, xp, user_id)
 VALUES
