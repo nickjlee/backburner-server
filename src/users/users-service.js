@@ -4,8 +4,8 @@ const Treeize = require('treeize')
 const UsersService = {
   getUserByUsername(db, username) {
     return db
-      .from('backburner_users AS usr')
-      .where('usr.username', username)
+      .from('backburner_users')
+      .where({ username })
       .first()
   },
 

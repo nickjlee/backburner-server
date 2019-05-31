@@ -9,6 +9,7 @@ const helmet = require('helmet')
 const { NODE_ENV } = require('./config')
 const tasksRouter = require('./tasks/tasks-router')
 const usersRouter = require('./users/users-router')
+const authRouter = require('./auth/auth-router')
 
 const app = express()
 app.use(express.json())
@@ -21,6 +22,7 @@ app.use(helmet())
 
 app.use('/api/users', usersRouter)
 app.use('/api/tasks', tasksRouter)
+app.use('/api/auth', authRouter)
 
 app.use(function errorHandler(error, req, res, next) {
   let response
