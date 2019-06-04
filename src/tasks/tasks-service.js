@@ -46,12 +46,4 @@ const TasksService = {
   }
 }
 
-const userFields = [
-  'usr.id AS user:id',
-  'usr.username AS user:username',
-  'usr.first_name AS user:first_name',
-  'usr.level AS user:level',
-  'usr.date_joined AS user:date_joined'
-]
-
 module.exports = TasksService
