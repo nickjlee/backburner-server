@@ -17,6 +17,16 @@ const TasksService = {
       )
   },
 
+  insertNewTask(db, newTask) {
+    return db
+      .insert(newTask)
+      .into('backburner_tasks')
+      // .returning('*')
+      // .then(([task]) => task)
+      // .then(task =>
+      //   TasksService.get)
+  },
+
   serializeTasks(tasks) {
     return tasks.map(this.serializeTask)
   },
