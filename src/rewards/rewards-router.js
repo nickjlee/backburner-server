@@ -6,7 +6,7 @@ const rewardsRouter = express.Router()
 const jsonBodyParser = express.json()
 
 rewardsRouter.route('/').get(requireAuth, (req, res, next) => {
-    RewardsService.getUserRewards(req.app.get('db'). req.user.id)
+    RewardsService.getUserRewards(req.app.get('db'), req.user.id)
       .then(rewards => {
         res.json(RewardsService.serializeRewards(rewards))
       })
