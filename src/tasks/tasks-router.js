@@ -14,7 +14,7 @@ tasksRouter.route('/').get(requireAuth, (req, res, next) => {
     .catch(next)
 })
 
-tasksRouter.route('/').post(jsonBodyParser, (req, res, next) => {
+tasksRouter.route('/').post(requireAuth, jsonBodyParser, (req, res, next) => {
   const { user_id, text, due_date, reward, xp } = req.body
   const newTask = { user_id, text, due_date, reward, xp }
 
@@ -35,5 +35,39 @@ tasksRouter.route('/').post(jsonBodyParser, (req, res, next) => {
     })
     .catch(next)
 })
+
+tasksRouter.route('/:task_id')
+  .all(checkTaskExists)
+  .all(requireAuth)
+  .delete((req, res, next) => {
+    TasksService.deleteTask(
+      req.app.get('db'),
+      req.params.task_id
+    )
+      .then(numRowsAffected => {
+        res.status(204).end()
+      })
+      .catch(next)
+  })
+
+async function checkTaskExists(req, res, next) {
+  try {
+    const task = await TasksService.getById(
+      req.app.get('db'),
+      req.params.task_id
+    )
+
+    if(!task) {
+      return res.status(404).json({
+        error: 'Task does not exist'
+      })
+    }
+
+    res.task = task
+    next()
+  } catch (error) {
+    next(error)
+  }
+}
 
 module.exports = tasksRouter

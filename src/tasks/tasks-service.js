@@ -2,6 +2,13 @@ const xss = require('xss')
 const Treeize = require('treeize')
 
 const TasksService = {
+  getById(db, task_id) {
+    return db
+      .from('backburner_tasks')
+      .where('id', task_id)
+      .first()
+  },
+
   getUserTasks(db, user_id) {
     return db
       .from('backburner_tasks AS tsk')
@@ -21,10 +28,18 @@ const TasksService = {
     return db
       .insert(newTask)
       .into('backburner_tasks')
-      // .returning('*')
-      // .then(([task]) => task)
-      // .then(task =>
-      //   TasksService.get)
+      .returning('*')
+      .then(([task]) => task)
+      .then(task =>
+        TasksService.getById(db, task.id)
+      )
+  },
+
+  deleteTask(db, taskID) {
+    return db
+      .from('backburner_tasks')
+      .where('id', taskID)
+      .delete()
   },
 
   serializeTasks(tasks) {
@@ -34,7 +49,10 @@ const TasksService = {
   serializeTask(task) {
     const taskTree = new Treeize()
 
+    
     const taskData = taskTree.grow([ task ]).getData()[0]
+    console.log(task)
+    console.log(taskData)
 
     return {
       id: taskData.id,
