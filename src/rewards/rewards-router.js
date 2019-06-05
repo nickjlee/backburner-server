@@ -5,9 +5,7 @@ const { requireAuth } = require('../middleware/jwt-auth')
 const rewardsRouter = express.Router()
 const jsonBodyParser = express.json()
 
-rewardsRouter
-  .route('/')
-  .get(requireAuth, (req, res, next) => {
+rewardsRouter.route('/').get(requireAuth, (req, res, next) => {
     RewardsService.getUserRewards(req.app.get('db'). req.user.id)
       .then(rewards => {
         res.json(RewardsService.serializeRewards(rewards))
@@ -19,10 +17,10 @@ rewardsRouter
   .route('/')
   .all(requireAuth)
   .post(jsonBodyParser, (req, res, next) => {
-    const { reward } = req.body
-    const newReward = { reward }
+    const { reward, user_id } = req.body
+    const newReward = { reward, user_id }
 
-    if(newReward.reward.value == null) {
+    if(newReward.reward == null) {
       return res.status(400).json({
         error: `Missing reward in request body`
       })

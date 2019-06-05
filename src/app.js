@@ -10,6 +10,7 @@ const { NODE_ENV } = require('./config')
 const tasksRouter = require('./tasks/tasks-router')
 const usersRouter = require('./users/users-router')
 const authRouter = require('./auth/auth-router')
+const rewardsRouter = require('./rewards/rewards-router')
 
 const app = express()
 app.use(express.json())
@@ -23,6 +24,7 @@ app.use(helmet())
 app.use('/api/users', usersRouter)
 app.use('/api/tasks', tasksRouter)
 app.use('/api/auth', authRouter)
+app.use('/api/rewards', rewardsRouter)
 
 app.use(function errorHandler(error, req, res, next) {
   let response
