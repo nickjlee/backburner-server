@@ -67,6 +67,12 @@ usersRouter
   .patch(requireAuth, jsonBodyParser, (req, res, next) => {
     const { username = req.user.username, gained_xp } = req.body
 
+    if(gained_xp == null) {
+      return res.status(400).json({
+        error: `Request body must contain 'gained_xp'`
+      })
+    }
+
     UsersService.getByUsername(req.app.get('db'), username)
       .then(user => {
         let { xp, xp_to_next_level, level } = user
