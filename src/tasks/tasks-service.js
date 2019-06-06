@@ -51,8 +51,6 @@ const TasksService = {
 
     
     const taskData = taskTree.grow([ task ]).getData()[0]
-    console.log(task)
-    console.log(taskData)
 
     return {
       id: taskData.id,

@@ -44,7 +44,7 @@ tasksRouter.route('/:task_id')
       req.app.get('db'),
       req.params.task_id
     )
-      .then(numRowsAffected => {
+      .then(() => {
         res.status(204).end()
       })
       .catch(next)
