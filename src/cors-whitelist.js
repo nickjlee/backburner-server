@@ -1,6 +1,6 @@
 'use strict';
 
-const whitelist = ['http://localhost:3000', 'http://my-project.com'];
+const whitelist = ['http://localhost:3000', 'http://localhost:5000'];
 const originGenerator = function (origin, callback) {
   if (whitelist.indexOf(origin) !== -1 || !origin) {
     callback(null, true);
