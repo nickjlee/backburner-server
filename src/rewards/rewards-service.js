@@ -33,6 +33,13 @@ const RewardsService = {
       )
   },
 
+  deleteReward(db, rewardId) {
+    return db
+      .from('backburner_rewards')
+      .where('id', rewardId)
+      .delete()
+  },
+
   serializeRewards(rewards) {
     return rewards.map(this.serializeReward)
   },

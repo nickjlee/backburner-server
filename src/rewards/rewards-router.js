@@ -35,4 +35,40 @@ rewardsRouter
       .catch(next)
   })
 
-  module.exports = rewardsRouter
+rewardsRouter
+  .route('/:reward_id')
+  .all(checkRewardExists)
+  .all(requireAuth)
+  .delete((req, res, next) => {
+    RewardsService.deleteReward(
+      req.app.get('db'),
+      req.params.reward_id
+    )
+      .then(() => {
+        res.status(204).end()
+      })
+      .catch(next)
+    
+  })
+
+async function checkRewardExists(req, res, next) {
+  try {
+    const reward = await RewardsService.getById(
+      req.app.get('db'),
+      req.params.reward_id
+    )
+
+    if(!reward) {
+      return res.status(404).json({
+        error: 'Reward does not exist'
+      })
+    }
+
+    res.reward = reward
+    next()
+  } catch (error) {
+    next(error)
+  }
+}
+
+module.exports = rewardsRouter
