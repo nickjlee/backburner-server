@@ -11,13 +11,14 @@ const RewardsService = {
   
   getUserRewards(db, user_id) {
     return db
-      .from('backburner_rewards AS rwd')
+      .from('backburner_rewards')
       .select(
-        'rwd.id',
-        'rwd.reward'
+        'id',
+        'reward',
+        'user_id'
       )
       .where(
-        'rwd.user_id', user_id
+        'user_id', user_id
       )
   },
 
@@ -40,11 +41,11 @@ const RewardsService = {
     const rewardTree = new Treeize()
 
     const rewardData = rewardTree.grow([ reward ]).getData()[0]
-
+    
     return {
-      id: reward.id,
-      reward: xss(reward.reward),
-      user_id: xss(reward.user_id)
+      id: rewardData.id,
+      reward: xss(rewardData.reward),
+      user_id: rewardData.user_id
     }
   }
 }
