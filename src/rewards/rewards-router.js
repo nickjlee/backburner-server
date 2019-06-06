@@ -5,7 +5,10 @@ const { requireAuth } = require('../middleware/jwt-auth')
 const rewardsRouter = express.Router()
 const jsonBodyParser = express.json()
 
-rewardsRouter.route('/').get(requireAuth, (req, res, next) => {
+rewardsRouter
+  .route('/')
+  .all(requireAuth)
+  .get((req, res, next) => {
     RewardsService.getUserRewards(req.app.get('db'), req.user.id)
       .then(rewards => {
         res.json(RewardsService.serializeRewards(rewards))
@@ -30,6 +33,7 @@ rewardsRouter
       .then(reward => {
         res
           .status(201)
+          .location()
           .json(RewardsService.serializeReward(reward))
       })
       .catch(next)
