@@ -11,17 +11,18 @@ const TasksService = {
 
   getUserTasks(db, user_id) {
     return db
-      .from('backburner_tasks AS tsk')
+      .from('backburner_tasks')
       .select(
-        'tsk.id',
-        'tsk.text',
-        'tsk.due_date',
-        'tsk.reward',
-        'tsk.xp',
+        'id',
+        'text',
+        'due_date',
+        'reward',
+        'xp',
       )
       .where(
-        'tsk.user_id', user_id
+        'user_id', user_id
       )
+      .orderBy('due_date')
   },
 
   insertNewTask(db, newTask) {
