@@ -58,19 +58,21 @@ usersRouter
                   .location(path.posix.join(req.originalUrl))
                   .json(UsersService.serializeUser(user))
               })
+              .catch(next)
           })
+          .catch(next)
       })
       .catch(next)
   })
   .patch(requireAuth, jsonBodyParser, (req, res, next) => {
-    const { username = req.user.username, xp_gained } = req.body
+    const { username = req.user.username, gained_xp } = req.body
 
     UsersService.getByUsername(req.app.get('db'), username)
       .then(user => {
         let { xp, xp_to_next_level, level } = user
-        const totalXp = xp + xp_gained
+        const totalXp = xp + gained_xp
         const diffOfXp = xp_to_next_level - totalXp
-
+        
         if(diffOfXp <= 0) {
           xp = Math.abs(diffOfXp)
           xp_to_next_level = Math.ceil(xp_to_next_level * 1.1)
@@ -88,6 +90,7 @@ usersRouter
           .then(updatedUser => {
             res.json(UsersService.serializeUser(updatedUser))
           })
+        .catch(next)
       })
       .catch(next)
   })
