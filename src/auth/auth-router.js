@@ -17,7 +17,7 @@ authRouter.post('/login', jsonBodyParser, (req, res, next) => {
     }
   }
 
-  UsersService.getUserByUsername (
+  UsersService.getByUsername (
     req.app.get('db'),
     loginUser.username
   )
