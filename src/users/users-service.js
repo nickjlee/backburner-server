@@ -5,7 +5,7 @@ const Treeize = require('treeize')
 const REGEX_UPPER_LOWER_NUMBER_SPECIAL = /(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&])[\S]+/
 
 const UsersService = {
-  getUserByUsername(db, username) {
+  getByUsername(db, username) {
     return db
       .from('backburner_users')
       .where({ username })
@@ -24,6 +24,14 @@ const UsersService = {
     return db
       .insert(newUser)
       .into('backburner_users')
+      .returning('*')
+      .then(([user]) => user)
+  },
+
+  updateUser(db, id, newUserFields) {
+    return db('backburner_users')
+      .where('id', id)
+      .update(newUserFields)
       .returning('*')
       .then(([user]) => user)
   },
@@ -62,6 +70,8 @@ const UsersService = {
       username: xss(userData.username),
       first_name: xss(userData.first_name),
       level: userData.level,
+      xp: userData.xp,
+      xp_to_next_level: userData.xp_to_next_level,
       date_joined: userData.date_joined
     }
   }

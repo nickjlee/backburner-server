@@ -9,15 +9,12 @@ const jsonBodyParser = express.json()
 usersRouter
   .route('/')
   .get(requireAuth, (req, res, next) => {
-    UsersService.getUserByUsername(req.app.get('db'), req.user.username)
+    UsersService.getByUsername(req.app.get('db'), req.user.username)
       .then(user => {
         res.json(UsersService.serializeUser(user))
       })
       .catch(next)
   })
-
-usersRouter
-  .route('/')
   .post(jsonBodyParser, (req, res, next) => {
     const { password, username, first_name } = req.body
 
@@ -61,6 +58,35 @@ usersRouter
                   .location(path.posix.join(req.originalUrl))
                   .json(UsersService.serializeUser(user))
               })
+          })
+      })
+      .catch(next)
+  })
+  .patch(requireAuth, jsonBodyParser, (req, res, next) => {
+    const { username = req.user.username, xp_gained } = req.body
+
+    UsersService.getByUsername(req.app.get('db'), username)
+      .then(user => {
+        let { xp, xp_to_next_level, level } = user
+        const totalXp = xp + xp_gained
+        const diffOfXp = xp_to_next_level - totalXp
+
+        if(diffOfXp <= 0) {
+          xp = Math.abs(diffOfXp)
+          xp_to_next_level = Math.ceil(xp_to_next_level * 1.1)
+          level += 1
+        } else {
+          xp = totalXp
+        }
+
+        const fieldsToUpdate = { xp, xp_to_next_level, level }
+        UsersService.updateUser(
+          req.app.get('db'),
+          req.user.id,
+          fieldsToUpdate
+        )
+          .then(updatedUser => {
+            res.json(UsersService.serializeUser(updatedUser))
           })
       })
       .catch(next)

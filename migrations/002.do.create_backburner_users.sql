@@ -5,6 +5,7 @@ CREATE TABLE backburner_users (
   password TEXT NOT NULL,
   level INTEGER NOT NULL DEFAULT 0,
   xp INTEGER NOT NULL DEFAULT 0,
+  xp_to_next_level INTEGER NOT NULL DEFAULT 500,
   date_joined DATE NOT NULL DEFAULT CURRENT_DATE
 );
 
