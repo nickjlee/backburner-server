@@ -15,7 +15,7 @@ tasksRouter.route('/').get(requireAuth, (req, res, next) => {
 })
 
 tasksRouter.route('/').post(requireAuth, jsonBodyParser, (req, res, next) => {
-  const { user_id, text, due_date, reward, xp } = req.body
+  const { user_id = req.user.id, text, due_date, reward, xp } = req.body
   const newTask = { user_id, text, due_date, reward, xp }
 
   for (const [key, value] of Object.entries(newTask)) {
