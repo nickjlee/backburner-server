@@ -15,10 +15,6 @@ rewardsRouter
       })
       .catch(next)
   })
-
-rewardsRouter
-  .route('/')
-  .all(requireAuth)
   .post(jsonBodyParser, (req, res, next) => {
     const { reward, user_id = req.user.id } = req.body
     const newReward = { reward, user_id }
