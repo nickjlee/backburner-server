@@ -44,7 +44,8 @@ tasksRouter
       .catch(next)
   })
 
-tasksRouter.route('/:task_id')
+tasksRouter
+  .route('/:task_id')
   .all(checkTaskExists)
   .all(requireAuth)
   .delete((req, res, next) => {
