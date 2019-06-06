@@ -20,7 +20,7 @@ rewardsRouter
   .route('/')
   .all(requireAuth)
   .post(jsonBodyParser, (req, res, next) => {
-    const { reward, user_id } = req.body
+    const { reward, user_id = req.user.id } = req.body
     const newReward = { reward, user_id }
 
     if(newReward.reward == null) {
