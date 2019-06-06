@@ -3,7 +3,7 @@
 const whitelist = [
   'http://localhost:3000',
   'http://localhost:5000',
-  'https://backburner.nickjlee.now.sh'
+  'https://backburner.now.sh'
 ]
 
 const originGenerator = function(origin, callback) {
