@@ -5,11 +5,11 @@ TRUNCATE
   backburner_tasks
   RESTART IDENTITY CASCADE;
 
-INSERT INTO backburner_users (username, first_name, password, level)
+INSERT INTO backburner_users (username, first_name, password, level, xp)
 VALUES
-  ('demo1', 'Demo-1', '$2a$12$Xtsip8DrajF4Va0dou5T9uLgDrWme3Mk/PWoCXLm5a9hK5fx6G5Ky', 0),  -- password = 'password'
-  ('demo2', 'Demo-2', '$2a$12$WJFfSXfZEpXIyGfhUoGUt.gn8HjcVSkwRD.j8/Q2e/LlzhmYK0OVi', 13), -- password = '12345'
-  ('demo3', 'Demo-3', '$2a$12$Kx1KcC51cjmqo7HklDLGaO2dxJ0ykPiqddi7QB0b0XN4hoYPpB6cq', 4);  -- password = 'demo'
+  ('demo', 'Demo', '$2a$12$Xtsip8DrajF4Va0dou5T9uLgDrWme3Mk/PWoCXLm5a9hK5fx6G5Ky', 0, 490),  -- password = 'password'
+  -- ('demo2', 'Demo-2', '$2a$12$WJFfSXfZEpXIyGfhUoGUt.gn8HjcVSkwRD.j8/Q2e/LlzhmYK0OVi', 13), -- password = '12345'
+  -- ('demo3', 'Demo-3', '$2a$12$Kx1KcC51cjmqo7HklDLGaO2dxJ0ykPiqddi7QB0b0XN4hoYPpB6cq', 4);  -- password = 'demo'
 
 INSERT INTO backburner_tasks (text, due_date, reward, xp, user_id)
 VALUES
