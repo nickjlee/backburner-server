@@ -1,0 +1,12 @@
+{
+  "extends": "mocha/test",
+  "rules": {
+    "node/no-unpublished-require": 0,
+    "node/no-missing-require": 0,
+    "semi": 0
+  },
+  "globals": {
+    "expect": "readonly",
+    "supertest": "readonly"
+  }
+}
