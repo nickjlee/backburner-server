@@ -119,18 +119,69 @@ function makeRewardsArray(user) {
   ]
 }
 
+function makeExpectedTask(task) {
+  return {
+    id: task.id,
+    text: task.text,
+    due_date: task.due_date + 'T00:00:00.000Z',
+    reward: task.reward,
+    xp: task.xp.toString()
+  }
+}
+
+function makeMaliciousTask(user) {
+  const maliciousTask = {
+    id: 1,
+    text: 'Naughty naughty very naughty <script>alert("xss");</script>',
+    due_date: '2019-08-01',
+    reward: 'Bad image <img src="https://url.to.file.which/does-not.exist" onerror="alert(document.cookie);">. But not <strong>all</strong> bad.',
+    xp: 100,
+    user_id: user.id
+  }
+
+  const expectedTask = {
+    ...makeExpectedTask(maliciousTask),
+    text: 'Naughty naughty very naughty &lt;script&gt;alert("xss");&lt;/script&gt;',
+    reward: `Bad image <img src="https://url.to.file.which/does-not.exist">. But not <strong>all</strong> bad.`
+  }
+
+  return {
+    maliciousTask,
+    expectedTask
+  }
+}
+
 function seedUser(db, user) {
   const preppedUser = {
     ...user,
     password: bcrypt.hashSync(user.password, 1)
   }
 
-  return db.into('backburner_users').insert(preppedUser)
+  return db
+    .into('backburner_users')
+    .insert(preppedUser)
     .then(() =>
-      db.raw(
-        `SELECT setval('backburner_users_id_seq', ?)`,
-        [user.id]
-      )
+      db.raw(`SELECT setval('backburner_users_id_seq', ?)`, [user.id])
+    )
+}
+
+function seedTasks(db, user, tasks) {
+  return db.transaction(async trx => {
+    await seedUser(trx, user)
+    await trx.into('backburner_tasks').insert(tasks)
+
+    await trx.raw(`SELECT setval('backburner_tasks_id_seq', ?)`, [
+      tasks[tasks.length - 1].id
+    ])
+  })
+}
+
+function seedMaliciousTask(db, user, task) {
+  return seedUser(db, user)
+    .then(() => 
+      db
+        .into('backburner_tasks')
+        .insert([task])
     )
 }
 
@@ -157,7 +208,11 @@ module.exports = {
   makeUser,
   makeTasksArray,
   makeRewardsArray,
+  makeExpectedTask,
+  makeMaliciousTask,
   seedUser,
+  seedTasks,
+  seedMaliciousTask,
   cleanTables,
-  makeAuthHeader,
+  makeAuthHeader
 }
