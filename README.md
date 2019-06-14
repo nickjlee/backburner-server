@@ -1,7 +1,7 @@
 # BackBurner - Server
 
 This is the backend server for [BackBurner client](https://backburner.now.sh "BackBurner").
-> Live on heroku @ https://thebackburner.herokuapp.com
+> Live on heroku @ https://thebackburner-server.herokuapp.com
 
 ## Core Technologies
 
