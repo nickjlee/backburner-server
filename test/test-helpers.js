@@ -12,46 +12,6 @@ function makeUser() {
     xp_to_next_level: 500,
     date_joined: '2019-01-01'
   }
-  // {
-  //   id: 1,
-  //   username: 'testUser-1',
-  //   first_name: 'test1',
-  //   password: 'Pa$$w0rd',
-  //   level: 1,
-  //   xp: 100,
-  //   xp_to_next_level: 500,
-  //   date_joined: '2019-01-01'
-  // },
-  // {
-  //   id: 2,
-  //   username: 'testUser-2',
-  //   first_name: 'test2',
-  //   password: 'Pa$$w0rd',
-  //   level: 1,
-  //   xp: 200,
-  //   xp_to_next_level: 500,
-  //   date_joined: '2019-02-02'
-  // },
-  // {
-  //   id: 3,
-  //   username: 'testUser-3',
-  //   first_name: 'test3',
-  //   password: 'Pa$$w0rd',
-  //   level: 1,
-  //   xp: 300,
-  //   xp_to_next_level: 500,
-  //   date_joined: '2019-03-03'
-  // },
-  // {
-  //   id: 4,
-  //   username: 'testUser-4',
-  //   first_name: 'test4',
-  //   password: 'Pa$$w0rd',
-  //   level: 1,
-  //   xp: 400,
-  //   xp_to_next_level: 500,
-  //   date_joined: '2019-04-04'
-  // }
 }
 
 function makeTasksArray(user) {
@@ -129,12 +89,21 @@ function makeExpectedTask(task) {
   }
 }
 
+function makeExpectedReward(reward, user) {
+  return {
+    id: reward.id,
+    reward: reward.reward,
+    user_id: Number(user.id)
+  }
+}
+
 function makeMaliciousTask(user) {
   const maliciousTask = {
     id: 1,
     text: 'Naughty naughty very naughty <script>alert("xss");</script>',
     due_date: '2019-08-01',
-    reward: 'Bad image <img src="https://url.to.file.which/does-not.exist" onerror="alert(document.cookie);">. But not <strong>all</strong> bad.',
+    reward:
+      'Bad image <img src="https://url.to.file.which/does-not.exist" onerror="alert(document.cookie);">. But not <strong>all</strong> bad.',
     xp: 100,
     user_id: user.id
   }
@@ -148,6 +117,24 @@ function makeMaliciousTask(user) {
   return {
     maliciousTask,
     expectedTask
+  }
+}
+
+function makeMaliciousReward(user) {
+  const maliciousReward = {
+    id: 1,
+    reward: 'Naughty naughty very naughty <script>alert("xss");</script>',
+    user_id: Number(user.id)
+  }
+
+  const expectedReward = {
+    ...makeExpectedReward(maliciousReward, user),
+    reward: 'Naughty naughty very naughty &lt;script&gt;alert("xss");&lt;/script&gt;'
+  }
+
+  return {
+    maliciousReward,
+    expectedReward
   }
 }
 
@@ -176,13 +163,27 @@ function seedTasks(db, user, tasks) {
   })
 }
 
+function seedRewards(db, user, rewards) {
+  return db.transaction(async trx => {
+    await seedUser(trx, user)
+    await trx.into('backburner_rewards').insert(rewards)
+
+    await trx.raw(`SELECT setval('backburner_rewards_id_seq', ?)`, [
+      rewards[rewards.length - 1].id
+    ])
+  })
+}
+
 function seedMaliciousTask(db, user, task) {
-  return seedUser(db, user)
-    .then(() => 
-      db
-        .into('backburner_tasks')
-        .insert([task])
-    )
+  return seedUser(db, user).then(() =>
+    db.into('backburner_tasks').insert([task])
+  )
+}
+
+function seedMaliciousReward(db, user, reward) {
+  return seedUser(db, user).then(() =>
+    db.into('backburner_rewards').insert([reward])
+  )
 }
 
 function cleanTables(db) {
@@ -209,10 +210,14 @@ module.exports = {
   makeTasksArray,
   makeRewardsArray,
   makeExpectedTask,
+  makeExpectedReward,
   makeMaliciousTask,
+  makeMaliciousReward,
   seedUser,
   seedTasks,
+  seedRewards,
   seedMaliciousTask,
+  seedMaliciousReward,
   cleanTables,
   makeAuthHeader
 }
